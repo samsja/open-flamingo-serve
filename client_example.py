@@ -28,4 +28,4 @@ resp = client.post(
     on='/', inputs=DocArray[Prompt]([prompt]), return_type=DocArray[Response]
 )
 
-print(resp[0].generate)
+print(resp[0].generated)
