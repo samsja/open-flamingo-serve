@@ -27,3 +27,5 @@ client = Client(port=12347)
 resp = client.post(
     on='/', inputs=DocArray[Prompt]([prompt]), return_type=DocArray[Response]
 )
+
+print(resp[0].generate)
