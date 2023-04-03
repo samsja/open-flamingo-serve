@@ -102,5 +102,3 @@ class FlamingoExec(Executor):
         lang_x = self.tokenizer([prompt.prompt], return_tensors='pt')
 
         return PromptLoaded(images=images, prompt=lang_x)
-
-
