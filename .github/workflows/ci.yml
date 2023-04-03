@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+
+  lint-ruff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+      - name: Lint with ruff
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ruff
+
+          ruff .
+
+  check-black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.5.0
+      - name: Set up Python 3.7
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.7
+      - name: check black
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install black
+          black --check .
+        env:
+          CHANGED_FILES: ${{ steps.file_changes.outputs.added_modified }}
+
+    # just for blocking the merge until all parallel core-test are successful
+  success-all-test:
+    needs: [lint-ruff, check-black]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v2
+      - name: Check Failure
+        if: env.WORKFLOW_CONCLUSION == 'failure'
+        run: exit 1
+      - name: Success
+        if: ${{ success() }}
+        run: echo "All Done"
