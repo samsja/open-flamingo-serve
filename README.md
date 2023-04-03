@@ -15,6 +15,53 @@ Under the hood it is using the [Jina](https://github.com/jina-ai/jina) framework
   * Monitoring and tracing with the [OpenTelemetry](https://docs.jina.ai/cloud-nativeness/opentelemetry/) support
   * [Dynamic Batching](https://docs.jina.ai/concepts/executor/dynamic-batching/) for fast inference 
 
+## How to use:
+
+### 1. via Python
+
+run 
+
+```console
+pip install -r requirements.txt
+```
+
+then start the server. You need to have at least 18gb of video of ram. Alternatively you can use your CPU (will be slow though) by changing the device parameters of the `FlamingoExecutor` to `cpu`
+
+```console
+python serve.py
+```
+
+This will expose the gRPC server on the port `12347`
+
+you can connect via the client by running
+
+```console
+python client_example.py
+```
+
+### 2. via Docker
+
+You need to have docker install in your machine with nvidia [driver support](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) for docker
+or to run via cpu as explain above
+
+```console
+ docker build -t open_flamingo:latest .
+```
+
+then you can run it via
+
+```console
+ docker run open_flamingo:latest 
+```
+
+### 3. via Kubernetes
+
+You will need to have a Kubernetes cluster setup and ready.
+
+```
+kubectl apply -R k8s
+``` 
+
 ## What is OpenFlamingo ?
 
 [Open Flamingo](https://laion.ai/blog/open-flamingo/) is an open source implementation of the [Flamingo paper](https://arxiv.org/abs/2204.14198)
