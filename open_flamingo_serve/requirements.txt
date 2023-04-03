@@ -1,5 +1,5 @@
 git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray
-transformers>= 4.27.4
+git+https://github.com/huggingface/transformers
 open-flamingo==0.0.2
 open_clip_torch==2.16.0
 git+https://github.com/jina-ai/jina
