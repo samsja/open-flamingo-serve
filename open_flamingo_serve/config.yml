@@ -1,0 +1,8 @@
+jtype: open_flamingo_serve
+py_modules:
+  - open_flamingo_exec.py
+metas:
+  name: open_flamingo_serve
+  description: OpenFlamingo serving. MLLM, text and image as input and generate text out of it
+  url: https://github.com/samsja/open-flamingo-serve
+  keywords: ['gpt4', ' MLLM']
