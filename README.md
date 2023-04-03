@@ -21,13 +21,13 @@ Under the hood it is using the [Jina](https://github.com/jina-ai/jina) framework
 
 run 
 
-```console
+```cmd
 pip install -r requirements.txt
 ```
 
 then start the server. You need to have at least 18gb of video of ram. Alternatively you can use your CPU (will be slow though) by changing the device parameters of the `FlamingoExecutor` to `cpu`
 
-```console
+```cmd
 python serve.py
 ```
 
@@ -35,7 +35,7 @@ This will expose the gRPC server on the port `12347`
 
 you can connect via the client by running
 
-```console
+```cmd
 python client_example.py
 ```
 
@@ -44,13 +44,13 @@ python client_example.py
 You need to have docker install in your machine with nvidia [driver support](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html) for docker
 or to run via cpu as explain above
 
-```console
+```cmd
  docker build -t open_flamingo:latest .
 ```
 
 then you can run it via
 
-```console
+```cmd
  docker run open_flamingo:latest 
 ```
 
@@ -58,7 +58,7 @@ then you can run it via
 
 You will need to have a Kubernetes cluster setup and ready.
 
-```
+```cmd
 kubectl apply -R k8s
 ``` 
 
