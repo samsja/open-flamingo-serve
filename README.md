@@ -111,7 +111,7 @@ They end up with a 9b Open flamingo model that was trained on  5M samples from o
 ## TODO
 
 
-- [] add a toy frontend to play around
+- [ ] add a toy frontend to play around
 
 
 
