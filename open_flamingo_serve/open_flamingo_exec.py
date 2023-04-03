@@ -1,4 +1,3 @@
-from jina import Deployment
 from jina import Executor, requests
 
 from transformers import LlamaTokenizer
@@ -104,6 +103,4 @@ class FlamingoExec(Executor):
 
         return PromptLoaded(images=images, prompt=lang_x)
 
-if __name__ == '__main__':
-    with Deployment(uses=FlamingoExec, port=12347) as dep:
-        dep.block()
+
