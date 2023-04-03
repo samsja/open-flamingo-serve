@@ -36,8 +36,7 @@ Several top AI labs have been working towards this direction of MLLM. Here is a 
 * GPT4 from OpenAI has been announced as being multi-modal (Vision + Text) but only the Text part is available as I write this readme.
 * [BLIP2](https://arxiv.org/abs/2301.12597) from Saleforce Research. (This one is slightly different from Flamingo as it can take only one image as input)
 * [Kosmos 1](https://arxiv.org/abs/2302.14045) from Microsoft Research
-
-...
+* and more ...
 
 
 ## How is Flamingo working ?
@@ -49,6 +48,7 @@ happened via the adapter at the embedding space which is a higher lever of abstr
 
 Specifically Flamingo is doing `early` fusion. The mutli modal interaction is done as soon as the first attention layer of the frozen pretrained LLM.
 
+![FLamingo schema](flamingo.png)
 
 This is different from BLIP2 for instance where the fusion is done `later` in the last layers of the network.
 
