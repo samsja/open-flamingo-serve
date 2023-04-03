@@ -104,6 +104,6 @@ class FlamingoExec(Executor):
 
         return PromptLoaded(images=images, prompt=lang_x)
 
-
-with Deployment(uses=FlamingoExec, port=12347) as dep:
-    dep.block()
+if __name__ == '__main__':
+    with Deployment(uses=FlamingoExec, port=12347) as dep:
+        dep.block()

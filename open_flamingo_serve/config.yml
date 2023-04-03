@@ -1,4 +1,4 @@
-jtype: open_flamingo_serve
+jtype: FlamingoExec
 py_modules:
   - open_flamingo_exec.py
 metas:
