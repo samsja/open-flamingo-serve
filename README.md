@@ -46,7 +46,7 @@ or to run via cpu as explain above
 
 ```cmd
 cd open_flamingo_serve
- docker build -t open_flamingo:latest .
+docker build -t open_flamingo:latest .
 ```
 
 then you can run it via
