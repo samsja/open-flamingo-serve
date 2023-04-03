@@ -45,6 +45,7 @@ You need to have docker install in your machine with nvidia [driver support](htt
 or to run via cpu as explain above
 
 ```cmd
+cd open_flamingo_serve
  docker build -t open_flamingo:latest .
 ```
 
