@@ -63,6 +63,21 @@ You will need to have a Kubernetes cluster setup and ready.
 kubectl apply -R k8s
 ``` 
 
+
+### 4. Run on Jina AI Cloud
+
+You can deploy this app on [Jina AI Cloud](https://cloud.jina.ai/) :
+
+first
+
+```cmd
+pip install jcloud
+```
+then ( you will be asked to authenticate yourself first)
+```
+jc deploy flow.yml
+```
+
 ## What is OpenFlamingo ?
 
 [Open Flamingo](https://laion.ai/blog/open-flamingo/) is an open source implementation of the [Flamingo paper](https://arxiv.org/abs/2204.14198)

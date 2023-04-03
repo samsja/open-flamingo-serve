@@ -1,0 +1,9 @@
+jtype: Deployment
+executors:
+  - name: open_flamingo_serve
+    uses: jinahub+docker://open_flamingo_serve
+    timeout_ready: -1  # slow download speed often leads to timeout
+    jcloud:
+      resources:
+        gpu: 1
+        memory: 24
