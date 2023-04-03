@@ -1,0 +1,124 @@
+apiVersion: v1
+data:
+  pythonunbuffered: '1'
+  worker_class: uvicorn.workers.UvicornH11Worker
+kind: ConfigMap
+metadata:
+  name: executor-configmap
+  namespace: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: executor
+  name: executor
+  namespace: default
+spec:
+  ports:
+  - name: port
+    port: 12347
+    protocol: TCP
+    targetPort: 12347
+  selector:
+    app: executor
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: executor
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: executor
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        linkerd.io/inject: enabled
+      labels:
+        app: executor
+        jina_deployment_name: executor
+        ns: default
+        pod_type: WORKER
+        shard_id: '0'
+    spec:
+      containers:
+      - args:
+        - executor
+        - --name
+        - executor
+        - --k8s-namespace
+        - default
+        - --uses
+        - config.yml
+        - --host
+        - 0.0.0.0
+        - --port
+        - '12347'
+        - --port-monitoring
+        - '9090'
+        - --uses-metas
+        - '{}'
+        - --native
+        command:
+        - jina
+        env:
+        - name: POD_UID
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.uid
+        - name: JINA_DEPLOYMENT_NAME
+          value: executor
+        - name: K8S_DEPLOYMENT_NAME
+          value: executor
+        - name: K8S_NAMESPACE_NAME
+          value: default
+        - name: K8S_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        envFrom:
+        - configMapRef:
+            name: executor-configmap
+        image: open_flamingo:latest
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - sleep 2
+        livenessProbe:
+          exec:
+            command:
+            - jina
+            - ping
+            - executor
+            - 127.0.0.1:12347
+            - --timeout 9500
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 10
+        name: executor
+        ports:
+        - containerPort: 12347
+        startupProbe:
+          exec:
+            command:
+            - jina
+            - ping
+            - executor
+            - 127.0.0.1:12347
+          failureThreshold: 120
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 10
