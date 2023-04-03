@@ -22,7 +22,7 @@ Under the hood it is using the [Jina](https://github.com/jina-ai/jina) framework
 run 
 
 ```cmd
-pip install -r requirements.txt
+pip install -r  open_flamingo_serve/requirements.txt
 ```
 
 then start the server. You need to have at least 18gb of video of ram. Alternatively you can use your CPU (will be slow though) by changing the device parameters of the `FlamingoExecutor` to `cpu`
