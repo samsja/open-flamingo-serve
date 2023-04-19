@@ -61,8 +61,9 @@ You will need to have a Kubernetes cluster setup and ready.
 
 ```cmd
 kubectl apply -R k8s
-``` 
+```
 
+Note: you might need to change the docker image to your docker image (push to your docker repo) in the k8s files.
 
 ### 4. Run on Jina AI Cloud
 
