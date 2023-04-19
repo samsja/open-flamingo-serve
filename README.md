@@ -126,10 +126,11 @@ They end up with a 9b Open flamingo model that was trained on  5M samples from o
 
 
 ## TODO
+this is a list of things I want to work on in the future
 
-
+- [ ] setup monitoring tool in k8s
 - [ ] add a toy frontend to play around
-
+- [ ] allow loading directly in 8 bits
 
 
 
