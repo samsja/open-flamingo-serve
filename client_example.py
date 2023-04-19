@@ -1,5 +1,5 @@
 from typing import List, Union
-from docarray import BaseDoc, DocArray
+from docarray import BaseDoc, DocList
 from docarray.typing import ImageUrl, ImageBytes
 from jina import Client
 
@@ -21,11 +21,11 @@ prompt = Prompt(
     prompt='<image> What is the name of this painting ?.<|endofchunk|><image>This is ',
 )
 
-docs = DocArray[Prompt]([prompt])
+docs = DocList[Prompt]([prompt])
 
 client = Client(port=12347)
 resp = client.post(
-    on='/', inputs=DocArray[Prompt]([prompt]), return_type=DocArray[Response]
+    on='/', inputs=DocList[Prompt]([prompt]), return_type=DocList[Response]
 )
 
 print(resp[0].generated)

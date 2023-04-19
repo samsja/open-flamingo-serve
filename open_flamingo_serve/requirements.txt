@@ -1,6 +1,6 @@
-git+https://github.com/docarray/docarray@feat-rewrite-v2#egg=docarray
-git+https://github.com/huggingface/transformers
+jina>=3.15.0
+docarray>=0.30.0
+transformers>=4.28.0
 open-flamingo==0.0.2
 open_clip_torch==2.16.0
-git+https://github.com/jina-ai/jina
 

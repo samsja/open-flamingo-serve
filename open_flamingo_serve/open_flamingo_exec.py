@@ -1,20 +1,17 @@
+from typing import List, Union, TypeVar
+
+from docarray import BaseDoc
+from docarray import DocList, DocVec
+from docarray.typing import ImageUrl, ImageBytes, TorchTensor
+
 from jina import Executor, requests
 
 from transformers import LlamaTokenizer
 import torch
-
-from transformers.tokenization_utils_base import BatchEncoding
 import transformers
-
-
-from typing import List, Union, TypeVar
 from open_flamingo import create_model_and_transforms
 from huggingface_hub import hf_hub_download
 
-from docarray import BaseDoc
-from docarray import DocArray
-
-from docarray.typing import ImageUrl, ImageBytes, TorchTensor
 
 transformers.LLaMATokenizer = LlamaTokenizer  # ugly hack
 
@@ -29,12 +26,14 @@ class Prompt(BaseDoc):  # input schema
 num_images = TypeVar('num_images')
 
 
-class PromptLoaded(BaseDoc):
-    class Config:
-        arbitrary_types_allowed = True
+class Tokens(BaseDoc):
+    input_ids: TorchTensor = None
+    attention_mask: TorchTensor = None
 
-    images: TorchTensor[1, 'num_images', 1, 3, 224, 224]
-    prompt: BatchEncoding
+
+class PromptLoaded(BaseDoc):
+    images: TorchTensor['num_images', 1, 3, 224, 224]
+    prompt: Tokens
 
 
 class Response(BaseDoc):
@@ -65,40 +64,40 @@ class FlamingoExec(Executor):
         self.model = self.model.to(device)
         self.device = device
 
-    @requests
-    def generate(self, docs: DocArray[Prompt], **kwargs) -> DocArray[Response]:
-        return DocArray[Response](
-            [Response(generated=self.generate_one_doc(doc)) for doc in docs]
-        )
-
-    def generate_one_doc(self, prompt_input: Prompt, **kwargs) -> str:
-        prompt = self.load_prompt_images(prompt_input)
-        if self.half:
-            prompt.images = prompt.images.half()
-
-        prompt.images = prompt.images.to(self.device)
-        prompt.prompt['input_ids'] = prompt.prompt['input_ids'].to(self.device)
-        prompt.prompt['attention_mask'] = prompt.prompt['attention_mask'].to(
-            self.device
-        )
-
-        generated_text = self.model.generate(
-            vision_x=prompt.images,
-            lang_x=prompt.prompt['input_ids'],
-            attention_mask=prompt.prompt['attention_mask'],
-            max_new_tokens=20,
-            num_beams=3,
-        )
-
-        return self.tokenizer.decode(generated_text[0])
-
     def load_prompt_images(self, prompt: Prompt) -> PromptLoaded:
         images = [
             self.image_processor(img.load_pil()).unsqueeze(0) for img in prompt.images
         ]
         images = torch.cat(images, dim=0)
-        images = images.unsqueeze(1).unsqueeze(0)
+        images = images.unsqueeze(1)
 
-        lang_x = self.tokenizer([prompt.prompt], return_tensors='pt')
+        lang_x = self.tokenizer([prompt.prompt])
 
-        return PromptLoaded(images=images, prompt=lang_x)
+        return PromptLoaded(images=images, prompt=Tokens(**lang_x))
+
+    def get_doc_vec(self, docs: DocList[Prompt]) -> DocVec[PromptLoaded]:
+        da = DocVec[PromptLoaded]([self.load_prompt_images(doc) for doc in docs])
+        da.prompt.to(self.device)
+        da.images = da.images.half()
+        da.to(self.device)
+
+        da.prompt.input_ids = da.prompt.input_ids.squeeze(1)
+        da.prompt.attention_mask = da.prompt.attention_mask.squeeze(1)
+        return da
+
+    @requests
+    def generate(self, docs: DocList[Prompt], **kwargs) -> DocList[Response]:
+
+        da = self.get_doc_vec(docs)
+
+        generated_text = self.model.generate(
+            vision_x=da.images,
+            lang_x=da.prompt.input_ids,
+            attention_mask=da.prompt.attention_mask,
+            max_new_tokens=20,
+            num_beams=3,
+        )
+
+        return DocList[Response](
+            [Response(generated=self.tokenizer.decode(txt)) for txt in generated_text]
+        )
